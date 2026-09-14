@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Campus Dashboard | Clario</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" />
+	<style>
+		#spotlight {
+			background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), rgba(124, 58, 237, 0.14), transparent 45%);
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			z-index: 1;
+		}
+	</style>
+</head>
+<body class="dark-theme">
+	<div id="spotlight"></div>
+
+	<header class="site-header">
+		<a class="brand" href="index.html" aria-label="Clario home">
+			<img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" />
+			<img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" />
+		</a>
+		<div class="header-actions">
+			<button class="theme-toggle is-dark" type="button" aria-label="Switch to light theme" aria-pressed="true">
+				<span class="theme-icon" aria-hidden="true">☼</span>
+				<span class="theme-icon" aria-hidden="true">☾</span>
+			</button>
+			<button class="menu-button" type="button" aria-label="Open navigation menu">
+				<span class="hamburger"><span></span><span></span><span></span></span>
+			</button>
+		</div>
+	</header>
+
+	<main class="page">
+		<div class="dashboard-greeting">
+			<div>
+				<p class="eyebrow">⚡ Campus Live Pulse</p>
+				<h1>Good morning, <em>there.</em></h1>
+			</div>
+			<p class="dashboard-date">Monday, 14 September 2026</p>
+		</div>
+
+		<!-- PRIORITY PILLS BAR -->
+		<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; padding: 12px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md);">
+			<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: var(--accent); font-weight: 700;">📊 LIVE TRIAGE RADAR:</span>
+			<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+				<span class="badge-pill badge-urgent">🔴 Urgent</span>
+				<span class="badge-pill badge-high">🟠 High Priority</span>
+				<span class="badge-pill badge-upcoming">🟡 Upcoming</span>
+				<span class="badge-pill badge-opportunity">🟢 Opportunity</span>
+				<span class="badge-pill badge-info">🔵 Info</span>
+				<span class="badge-pill badge-insight">🟣 AI Insight</span>
+			</div>
+		</div>
+
+		<div class="snapshot-grid">
+			<article class="snapshot-card urgent">
+				<span class="snapshot-label">Urgent Deadlines</span>
+				<strong class="snapshot-number">3</strong>
+			</article>
+			<article class="snapshot-card events">
+				<span class="snapshot-label">Events Scheduled</span>
+				<strong class="snapshot-number">2</strong>
+			</article>
+			<article class="snapshot-card opportunities">
+				<span class="snapshot-label">Active Fellowships</span>
+				<strong class="snapshot-number">4</strong>
+			</article>
+		</div>
+
+		<!-- SMART NOTIFICATIONS CATEGORIES (100% DYNAMIC — STRICTLY DERIVED FROM NOTICE CONTENT) -->
+		<section style="margin-bottom: 30px;">
+			<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+				<h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; margin-bottom: 0;">📱 Smart Notification Stream</h2>
+				<span id="notif-stream-badge" style="font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: var(--accent); font-weight: 700;">Live Notice Triage</span>
+			</div>
+
+			<div id="smart-notif-stream" class="smart-notif-stream-container" aria-live="polite">
+				<!-- Dynamically populated: only notifications extracted from the active notice will appear here -->
+			</div>
+		</section>
+
+		<!-- ❤️ INTEREST CHIPS FILTER -->
+		<section style="margin-bottom: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px;">
+			<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+				<h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; margin: 0;">❤️ Student Interest Radar</h3>
+				<div style="display: flex; align-items: center; gap: 10px;">
+					<button type="button" id="select-all-interests-btn" style="background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(37, 99, 235, 0.35); color: #3b82f6; border-radius: 99px; padding: 4px 12px; font-size: 0.76rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; cursor: pointer; transition: all 150ms ease;">✓ Select All</button>
+					<button type="button" id="clear-all-interests-btn" style="background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 99px; padding: 4px 12px; font-size: 0.76rem; font-family: 'JetBrains Mono', monospace; font-weight: 600; cursor: pointer; transition: all 150ms ease;">Clear</button>
+					<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent);">Live Filtering Active</span>
+				</div>
+			</div>
+			<p style="font-size: 0.82rem; color: var(--muted); margin-bottom: 12px;">Toggle interests to instantly filter which academic opportunities and club events Clario displays below:</p>
+			<div class="interest-chips-container" id="dashboard-interest-chips">
+				<button type="button" class="interest-chip is-selected" data-interest="ai">🤖 AI / ML</button>
+				<button type="button" class="interest-chip is-selected" data-interest="hackathons">🏆 Hackathons</button>
+				<button type="button" class="interest-chip is-selected" data-interest="robotics">🦾 Robotics</button>
+				<button type="button" class="interest-chip is-selected" data-interest="coding">💻 Coding</button>
+				<button type="button" class="interest-chip is-selected" data-interest="design">🎨 Design</button>
+				<button type="button" class="interest-chip is-selected" data-interest="sports">⚽ Sports</button>
+				<button type="button" class="interest-chip is-selected" data-interest="music">🎵 Music</button>
+				<button type="button" class="interest-chip is-selected" data-interest="startup">💼 Entrepreneurship</button>
+			</div>
+		</section>
+
+		<div class="dashboard-columns">
+			<article class="card">
+				<p class="eyebrow">📋 AI Daily Action Plan</p>
+				<h2>Keep Close</h2>
+				<ul class="dashboard-list" id="ai-action-plan" aria-live="polite">
+					<li><span>Waiting for your latest AI synthesis…</span></li>
+				</ul>
+			</article>
+
+			<article class="card">
+				<p class="eyebrow">⭐ Opportunity Discovery</p>
+				<h2>Worth a Look</h2>
+				<ul class="dashboard-list" id="source-opportunities" aria-live="polite">
+					<li><span>Only opportunities found in your submission appear here.</span></li>
+				</ul>
+			</article>
+		</div>
+	</main>
+
+	<div class="backdrop" data-close-menu></div>
+	<aside class="sidebar">
+		<div class="sidebar-top">
+			<a class="brand" href="index.html" data-close-menu>
+				<img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" />
+				<img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" />
+			</a>
+			<button class="close-button" type="button" data-close-menu aria-label="Close menu">×</button>
+		</div>
+		<nav>
+			<a href="index.html#top" data-close-menu><span class="nav-num">01 //</span> What is Clario?</a>
+			<a href="index.html#data-crisis" data-close-menu><span class="nav-num">02 //</span> Campus Data &amp; Insights</a>
+			<a href="index.html#how-it-works" data-close-menu><span class="nav-num">03 //</span> How Clario Works</a>
+			<a href="about.html" data-close-menu><span class="nav-num">04 //</span> About Clario</a>
+			<a href="index.html#account" data-close-menu><span class="nav-num">05 //</span> Student Sign In / Portal</a>
+			<a href="assistant.html" data-close-menu><span class="nav-num">06 //</span> Multimodal AI Organizer ✦</a>
+			<a href="dashboard.html" data-close-menu><span class="nav-num">07 //</span> Live Campus Dashboard ↗</a>
+			<a href="why-clario.html" data-close-menu><span class="nav-num">08 //</span> Why Clario Wins (Unique Edge)</a>
+			<a href="team.html" data-close-menu><span class="nav-num">09 //</span> Team SheCrescera</a>
+			<a href="conclusion.html" data-close-menu><span class="nav-num">10 //</span> Our Shared Vision</a>
+			<a href="customize.html" data-close-menu><span class="nav-num">11 //</span> Customize Theme &amp; Palette 🎨</a>
+		</nav>
+		<p class="sidebar-footer">© 2026 Clario • Built by Team SheCrescera.</p>
+	</aside>
+
+	<script src="script.js"></script>
+</body>
+</html>

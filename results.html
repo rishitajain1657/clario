@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Organized Result | Clario</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+	<header class="site-header">
+		<a class="brand" href="index.html" aria-label="Clario home">
+			<img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" />
+			<img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" />
+		</a>
+		<div class="header-actions">
+			<button class="theme-toggle is-dark" type="button" aria-label="Switch to light theme" aria-pressed="true"><span class="theme-icon" aria-hidden="true">☼</span><span class="theme-icon" aria-hidden="true">☾</span></button>
+			<button class="menu-button" type="button" aria-label="Open navigation menu"><span class="hamburger"><span></span><span></span><span></span></span></button>
+		</div>
+	</header>
+
+	<main class="page results-page" style="max-width: 1040px; margin: 0 auto;">
+		<div class="upload-success" id="upload-success" aria-live="polite" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius-md); color: #10b981; font-weight: 700; padding: 14px 20px; margin-bottom: 24px;">
+			✓ Your announcement was parsed and synthesized into action priorities.
+		</div>
+
+		<div class="page-heading">
+			<p class="eyebrow" id="result-mode-badge">✦ Real-Time AI Structured Output</p>
+			<h1>Here is what <em>matters now.</em></h1>
+			<p>We turned your campus information into a clear, grounded, action-ready brief.</p>
+		</div>
+
+		<div class="results-grid-layout" style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px;">
+			
+			<!-- UPLOADED SCREENSHOT DISPLAY (IF AVAILABLE) -->
+			<div id="uploaded-image-card" style="display: none; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px; text-align: center;">
+				<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+					<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: var(--accent); font-weight: 700;">SOURCE SCREENSHOT INGESTED</span>
+					<span style="font-size: 0.72rem; color: var(--muted); font-family: 'JetBrains Mono', monospace;">Multimodal OCR Vision</span>
+				</div>
+				<img id="result-preview-image" src="" alt="Source announcement screenshot" style="max-height: 280px; max-width: 100%; border-radius: 10px; border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,0.3); object-fit: contain;" />
+			</div>
+
+			<!-- STRUCTURED BRIEF CARD -->
+			<section class="result-card result-page-card" style="padding: 34px;">
+				<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+					<p class="eyebrow" style="margin-bottom: 0;">STRUCTURED CAMPUS BRIEF</p>
+					<div style="display: flex; align-items: center; gap: 8px;">
+						<span id="result-priority-pill" class="badge-pill badge-urgent">🔴 Urgent</span>
+						<span id="result-urgency-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 12px; border-radius: 99px; font-size: 0.74rem; font-family: 'JetBrains Mono', monospace; font-weight: 700;">NORMAL</span>
+					</div>
+				</div>
+
+				<h2 id="result-title" style="font-size: 1.8rem; margin-bottom: 10px;">Loading brief...</h2>
+				<p id="result-summary" style="color: var(--muted); font-size: 1rem; line-height: 1.65; margin-bottom: 20px;"></p>
+
+				<!-- TIMETABLE CONFLICT ALERT -->
+				<div id="conflict-box" style="display: none; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 18px; color: #f59e0b; font-size: 0.9rem;">
+					<strong style="display: block; margin-bottom: 4px;">⚠️ Schedule Conflict Detected:</strong>
+					<span id="conflict-text"></span>
+				</div>
+
+				<!-- MISSING NOTICE ALERT -->
+				<div id="missing-box" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 18px; color: #ef4444; font-size: 0.9rem;">
+					<strong style="display: block; margin-bottom: 4px;">Notice Flag: Missing Information:</strong>
+					<span id="missing-text"></span>
+				</div>
+
+				<!-- 🤖 AI SUMMARY STRUCTURED SECTION -->
+				<div style="margin: 24px 0 20px;">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+						<span style="font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--ink);">🤖 AI Grounded Analysis Summary:</span>
+						<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent);">Strict Multimodal Facts</span>
+					</div>
+					<table class="ai-summary-table">
+						<tbody>
+							<tr>
+								<td class="summary-field-col">📄 <strong>What Happened?</strong></td>
+								<td class="summary-val-col" id="summary-what">Campus announcement parsed.</td>
+							</tr>
+							<tr>
+								<td class="summary-field-col">📅 <strong>Deadline</strong></td>
+								<td class="summary-val-col" id="summary-deadline" style="color: #f59e0b; font-weight: 600;">Check with Organizer</td>
+							</tr>
+							<tr>
+								<td class="summary-field-col">📍 <strong>Venue</strong></td>
+								<td class="summary-val-col" id="summary-venue">Campus / Online</td>
+							</tr>
+							<tr>
+								<td class="summary-field-col">👥 <strong>Eligibility</strong></td>
+								<td class="summary-val-col" id="summary-eligibility">All Students</td>
+							</tr>
+							<tr>
+								<td class="summary-field-col">🔗 <strong>Registration Link</strong></td>
+								<td class="summary-val-col" id="summary-link">Not Mentioned</td>
+							</tr>
+							<tr>
+								<td class="summary-field-col">⚡ <strong>Required Action</strong></td>
+								<td class="summary-val-col" id="summary-action" style="color: var(--accent); font-weight: 700;">Review &amp; Attend</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- 🛡️ TRUST LAYER STATUS CARD -->
+				<div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 24px 0;">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+						<span style="font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--ink);">🛡️ Trust Layer Verification Status:</span>
+						<div id="trust-badge-container">
+							<span class="trust-badge-verified" id="trust-badge">🛡️ Verified</span>
+						</div>
+					</div>
+					<p id="trust-reason" style="font-size: 0.85rem; color: var(--muted); margin: 0; line-height: 1.5;">Official information confirmed with grounded facts from notice stream.</p>
+				</div>
+
+				<div class="result-meta" style="margin: 14px 0 20px;">
+					<span id="result-category">Campus Brief</span>
+					<span id="result-source">Live Vision Parser</span>
+				</div>
+
+				<div id="result-tags" style="margin-bottom: 20px;"></div>
+
+				<!-- SEQUENTIAL COLOR-IMPACT ACTION PRIORITIES -->
+				<div class="result-actions-wrap" style="border-top: 1px solid var(--line); padding-top: 24px;">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 6px;">
+						<h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin-bottom: 0;">Your Priority Action Sequence:</h3>
+						<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted);">Step 1 (Immediate) → Step 5 (Next)</span>
+					</div>
+					<div id="result-actions-list"></div>
+				</div>
+			</section>
+
+		</div>
+
+		<div class="result-page-actions" style="margin-top: 30px; display: flex; gap: 16px; flex-wrap: wrap;">
+			<a class="secondary-link" href="assistant.html">← Organize Another Announcement</a>
+			<a class="primary-link" href="dashboard.html">View Campus Dashboard &amp; Synced Tasks ↗</a>
+		</div>
+	</main>
+
+	<div class="backdrop" data-close-menu></div>
+	<aside class="sidebar">
+		<div class="sidebar-top">
+			<a class="brand" href="index.html" data-close-menu>
+				<img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" />
+				<img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" />
+			</a>
+			<button class="close-button" type="button" data-close-menu aria-label="Close menu">×</button>
+		</div>
+		<nav></nav>
+		<p class="sidebar-footer">© 2026 Clario • Built by Team SheCrescera.</p>
+	</aside>
+
+	<script src="script.js"></script>
+	<script>
+		const savedResult = JSON.parse(sessionStorage.getItem('clario-organizer-result') || 'null');
+		const uploadedImage = sessionStorage.getItem('clario-uploaded-image');
+
+		// 1. If screenshot was uploaded, display it
+		if (uploadedImage) {
+			const imgCard = document.querySelector('#uploaded-image-card');
+			const imgEl = document.querySelector('#result-preview-image');
+			if (imgCard && imgEl) {
+				imgEl.src = uploadedImage;
+				imgCard.style.display = 'block';
+			}
+		}
+
+		// 2. Populate structured brief
+		if (savedResult) {
+			document.querySelector('#result-title').textContent = savedResult.title || 'Campus Announcement Brief';
+			document.querySelector('#result-summary').textContent = savedResult.summary || 'Priorities extracted and triaged.';
+			document.querySelector('#result-category').textContent = savedResult.category || 'Campus Announcement';
+			document.querySelector('#result-source').textContent = savedResult.source || 'Multimodal Vision';
+			
+			// Urgency badge
+			const urgencyBadge = document.querySelector('#result-urgency-badge');
+			if (urgencyBadge) {
+				urgencyBadge.textContent = savedResult.urgency || 'NORMAL';
+				if (savedResult.urgency?.includes('HIGH')) {
+					urgencyBadge.style.color = '#ef4444';
+					urgencyBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+				}
+			}
+
+			// Priority pill
+			const priorityPillEl = document.querySelector('#result-priority-pill');
+			if (priorityPillEl) {
+				if (savedResult.priorityPill) {
+					priorityPillEl.textContent = savedResult.priorityPill.text;
+					priorityPillEl.className = `badge-pill ${savedResult.priorityPill.class}`;
+				} else if (savedResult.urgency?.includes('HIGH')) {
+					priorityPillEl.textContent = '🔴 Urgent';
+					priorityPillEl.className = 'badge-pill badge-urgent';
+				} else {
+					priorityPillEl.textContent = '🔵 Info';
+					priorityPillEl.className = 'badge-pill badge-info';
+				}
+			}
+
+			// Structured AI summary table values
+			document.querySelector('#summary-what').textContent = savedResult.summary || savedResult.title;
+			document.querySelector('#summary-deadline').textContent = savedResult.deadline || 'Check with Organizer';
+			document.querySelector('#summary-venue').textContent = savedResult.venue || 'Campus / Online';
+			document.querySelector('#summary-eligibility').textContent = savedResult.eligibility || 'All Students';
+			
+			const linkEl = document.querySelector('#summary-link');
+			if (savedResult.regLink && savedResult.regLink.startsWith('http')) {
+				linkEl.innerHTML = `<a href="${savedResult.regLink}" target="_blank" style="color: var(--accent); text-decoration: underline;">🔗 Open Link ↗</a>`;
+			} else {
+				linkEl.textContent = savedResult.regLink || 'Not Mentioned';
+			}
+			document.querySelector('#summary-action').textContent = savedResult.requiredAction || 'Review & Attend';
+
+			// Trust layer badge & rationale
+			const trustBadgeEl = document.querySelector('#trust-badge');
+			const trustReasonEl = document.querySelector('#trust-reason');
+			if (trustBadgeEl && trustReasonEl) {
+				const status = savedResult.trustStatus || 'verified';
+				trustBadgeEl.textContent = savedResult.trustLabel || '🛡️ Verified';
+				trustReasonEl.textContent = savedResult.trustReason || 'Official grounded information extracted without guesswork.';
+
+				if (status === 'conflict') {
+					trustBadgeEl.className = 'trust-badge-conflict';
+				} else if (status === 'needs-confirm') {
+					trustBadgeEl.className = 'trust-badge-needs-confirm';
+				} else if (status === 'sources') {
+					trustBadgeEl.className = 'trust-badge-sources';
+				} else {
+					trustBadgeEl.className = 'trust-badge-verified';
+				}
+			}
+
+			// Conflict box
+			if (savedResult.conflict) {
+				document.querySelector('#conflict-box').style.display = 'block';
+				document.querySelector('#conflict-text').textContent = savedResult.conflict;
+			}
+
+			// Missing notice box
+			if (savedResult.missingInfo) {
+				document.querySelector('#missing-box').style.display = 'block';
+				document.querySelector('#missing-text').textContent = savedResult.missingInfo;
+			}
+
+			// Tags
+			document.querySelector('#result-tags').innerHTML = (savedResult.tags || []).map(tag => `<span class="result-tag" style="margin-right: 6px;">#${tag}</span>`).join('');
+
+			// Action priorities with high visual impact color coding (Step 1 Red -> Step 2 Orange -> Step 3 Yellow -> Step 4 Green -> Step 5 Blue)
+			const actionItems = savedResult.actionItems || ['Review announcement and check schedule'];
+			const rankLabels = ['1. FIRST PRIORITY', '2. HIGH PRIORITY', '3. SCHEDULE IT', '4. OPPORTUNITY CHECK', '5. FOLLOW UP'];
+
+			document.querySelector('#result-actions-list').innerHTML = actionItems.map((item, idx) => {
+				const stepNum = idx + 1;
+				const rankText = rankLabels[idx] || `STEP ${stepNum}`;
+				return `
+					<div class="priority-step-item step-${Math.min(stepNum, 5)}">
+						<span class="step-rank">${rankText}</span>
+						<div style="flex: 1;">
+							<div style="font-size: 0.95rem; font-weight: 600; color: var(--ink); line-height: 1.4;">${item}</div>
+							<div style="font-size: 0.74rem; color: var(--muted); margin-top: 3px; font-family: 'JetBrains Mono', monospace;">Sequence rank #${stepNum} • Synced to Live Dashboard</div>
+						</div>
+					</div>
+				`;
+			}).join('');
+
+			// Mode indicator
+			const isGemini = savedResult.analysisMode === 'realtime-gemini';
+			const modeText = isGemini ? 'Real-Time Google Gemini AI (Multimodal Cloud Vision)' : 'In-Browser Multimodal OCR Vision &amp; Reasoning';
+			document.querySelector('#upload-success').innerHTML = `✓ <strong>${savedResult.uploadName || 'Your announcement'}</strong> processed with <strong>${modeText}</strong>! Synced to your live dashboard.`;
+			document.querySelector('#result-mode-badge').textContent = isGemini ? '✦ LIVE GEMINI 2.0 FLASH SYNTHESIS' : '✦ REAL-TIME OCR & REASONING OUTPUT';
+		}
+	</script>
+</body>
+</html>

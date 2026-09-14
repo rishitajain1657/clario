@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Clario — AI for Smarter Campus Information. Everything is announced. Almost nothing is understood. Fifty messages. Five priorities. One assistant." />
+	<title>Clario | AI for Smarter Campus Information</title>
+	
+	<!-- Fonts & Icons -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+	
+	<!-- Main Modern Stylesheet -->
+	<link rel="stylesheet" href="style.css" />
+
+	<style>
+		/* Interactive Cursor Spotlight */
+		#spotlight {
+			background: radial-gradient(850px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), rgba(124, 58, 237, 0.13), transparent 45%);
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			z-index: 1;
+			transition: opacity 300ms ease;
+		}
+
+		body.dark-theme #spotlight {
+			background: radial-gradient(850px circle at var(--mouse-x, 50%) var(--mouse-y, 30%), rgba(139, 92, 246, 0.16), transparent 45%);
+		}
+
+		/* Ambient Glowing Background Orbs */
+		.ambient-orb {
+			position: fixed;
+			border-radius: 50%;
+			pointer-events: none;
+			z-index: 0;
+			filter: blur(120px);
+			opacity: 0.5;
+		}
+		.orb-1 { top: -10%; left: 35%; width: 500px; height: 500px; background: rgba(124, 58, 237, 0.25); }
+		.orb-2 { top: 40%; right: -5%; width: 450px; height: 450px; background: rgba(6, 182, 212, 0.2); }
+		.orb-3 { bottom: -10%; left: -5%; width: 500px; height: 500px; background: rgba(244, 63, 94, 0.15); }
+
+		/* Pulsing Live Beacon */
+		.pulse-dot {
+			display: inline-flex;
+			position: relative;
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: var(--accent-cyan);
+		}
+		.pulse-dot::after {
+			content: "";
+			position: absolute;
+			inset: -3px;
+			border-radius: 50%;
+			background: var(--accent-cyan);
+			animation: beacon-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+			opacity: 0.75;
+		}
+		@keyframes beacon-ping {
+			0% { transform: scale(1); opacity: 0.8; }
+			100% { transform: scale(2.6); opacity: 0; }
+		}
+
+		/* Hero Section */
+		.hero-container {
+			display: grid;
+			grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+			gap: clamp(40px, 6vw, 90px);
+			align-items: center;
+			min-height: calc(100vh - 120px);
+			padding: clamp(40px, 6vw, 80px) 0;
+		}
+
+		.hero-interactive-card {
+			background: var(--surface);
+			backdrop-filter: blur(24px);
+			border: 1px solid var(--line);
+			border-radius: var(--radius-lg);
+			box-shadow: var(--shadow-lg);
+			padding: 30px;
+			position: relative;
+			overflow: hidden;
+			transition: all 300ms ease;
+		}
+		.hero-interactive-card:hover {
+			border-color: var(--line-glow);
+			transform: translateY(-4px) scale(1.01);
+		}
+
+		.mockup-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px solid var(--line);
+			padding-bottom: 16px;
+			margin-bottom: 20px;
+		}
+
+		.traffic-lights {
+			display: flex;
+			gap: 6px;
+		}
+		.traffic-light {
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+		}
+		.light-red { background: #ef4444; }
+		.light-yellow { background: #f59e0b; }
+		.light-green { background: #10b981; }
+
+		.hero-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16px;
+			margin-top: 36px;
+		}
+
+		.secondary-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 16px 26px;
+			border-radius: var(--radius-md);
+			background: var(--surface);
+			border: 1px solid var(--line);
+			font-weight: 600;
+			font-size: 0.95rem;
+			color: var(--ink);
+			transition: all 200ms ease;
+		}
+		.secondary-link:hover {
+			border-color: var(--accent);
+			color: var(--accent);
+			transform: translateY(-2px);
+		}
+
+		/* Taglines Banner */
+		.taglines-banner {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 16px;
+			margin: 28px 0;
+		}
+		.tagline-pill {
+			background: var(--surface);
+			border: 1px solid var(--line);
+			border-radius: var(--radius-md);
+			padding: 18px 24px;
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			box-shadow: var(--shadow);
+		}
+		.tagline-icon {
+			font-size: 1.4rem;
+			color: var(--accent);
+		}
+		.tagline-text {
+			font-weight: 700;
+			font-size: 0.95rem;
+			color: var(--ink);
+			line-height: 1.3;
+		}
+		.tagline-sub {
+			font-size: 0.78rem;
+			color: var(--muted);
+			font-family: 'JetBrains Mono', monospace;
+		}
+
+		/* Data Crisis Section & Graphs */
+		.crisis-section {
+			padding: 80px 0;
+			border-top: 1px solid var(--line);
+		}
+		.data-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 24px;
+			margin-top: 36px;
+		}
+		.data-card {
+			background: var(--surface);
+			backdrop-filter: blur(20px);
+			border: 1px solid var(--line);
+			border-radius: var(--radius-lg);
+			padding: 32px;
+			box-shadow: var(--shadow);
+		}
+		.graph-bar-container {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			margin-top: 24px;
+		}
+		.graph-bar-row {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+		}
+		.graph-bar-label {
+			display: flex;
+			justify-content: space-between;
+			font-size: 0.85rem;
+			font-weight: 600;
+		}
+		.graph-bar-track {
+			height: 10px;
+			border-radius: 999px;
+			background: rgba(255, 255, 255, 0.06);
+			overflow: hidden;
+			position: relative;
+		}
+		.graph-bar-fill {
+			height: 100%;
+			border-radius: 999px;
+			transition: width 1s ease-in-out;
+		}
+
+		.signal-journey {
+			background: linear-gradient(135deg, rgba(124, 58, 237, 0.13), rgba(6, 182, 212, 0.08));
+			border: 1px solid var(--line-glow);
+			border-radius: var(--radius-lg);
+			box-shadow: var(--shadow);
+			margin: 6px 0 72px;
+			padding: clamp(24px, 4vw, 40px);
+		}
+		.journey-heading { align-items: end; display: flex; gap: 28px; justify-content: space-between; }
+		.journey-heading .eyebrow { margin-bottom: 10px; }
+		.journey-heading h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 3vw, 2.4rem); letter-spacing: -0.03em; }
+		.journey-heading h2 em { color: var(--accent-cyan); font-style: normal; }
+		.journey-heading > p { color: var(--muted); font-size: 0.92rem; max-width: 350px; }
+		.journey-steps { align-items: center; display: flex; gap: 18px; justify-content: space-between; margin-top: 30px; }
+		.journey-step { align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); display: flex; flex: 1; gap: 14px; min-height: 105px; padding: 18px; }
+		.journey-step strong, .journey-step small { display: block; }
+		.journey-step strong { font-size: 0.92rem; }
+		.journey-step small { color: var(--muted); font-size: 0.73rem; margin-top: 3px; }
+		.journey-number { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; line-height: 1; }
+		.noise .journey-number { color: var(--coral); }
+		.filter .journey-number { color: var(--accent-cyan); }
+		.action .journey-number { color: var(--accent-emerald); }
+		.journey-arrow { color: var(--accent); font-size: 1.8rem; font-weight: 700; }
+
+		/* Comparison Matrix */
+		.comparison-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 24px;
+			text-align: left;
+			font-size: 0.9rem;
+		}
+		.comparison-table th {
+			padding: 16px 20px;
+			border-bottom: 2px solid var(--line);
+			font-family: 'Space Grotesk', sans-serif;
+			font-size: 1.05rem;
+		}
+		.comparison-table td {
+			padding: 16px 20px;
+			border-bottom: 1px solid var(--line);
+		}
+
+		/* Sidebar numbered links */
+		.nav-num {
+			font-family: 'JetBrains Mono', monospace;
+			font-size: 0.75rem;
+			color: var(--accent);
+			margin-right: 8px;
+		}
+
+		@media (max-width: 960px) {
+			.hero-container {
+				grid-template-columns: 1fr;
+			}
+			.journey-heading, .journey-steps { align-items: stretch; flex-direction: column; }
+			.journey-arrow { align-self: center; transform: rotate(90deg); }
+		}
+	</style>
+</head>
+<body class="dark-theme">
+	<!-- Spotlight Cursor Tracker -->
+	<div id="spotlight"></div>
+
+	<!-- Glowing Ambient Atmospheric Lights -->
+	<div class="ambient-orb orb-1"></div>
+	<div class="ambient-orb orb-2"></div>
+	<div class="ambient-orb orb-3"></div>
+
+	<!-- TOP HEADER / NAVIGATION -->
+	<header class="site-header">
+		<a class="brand" href="#top" aria-label="Clario home">
+			<img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" />
+			<img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" />
+		</a>
+
+		<div class="header-actions">
+			<button class="theme-toggle is-dark" type="button" aria-label="Switch to light theme" aria-pressed="true">
+				<span class="theme-icon" aria-hidden="true">☼</span>
+				<span class="theme-icon" aria-hidden="true">☾</span>
+			</button>
+			<button class="menu-button" type="button" aria-label="Open navigation menu" aria-controls="sidebar" aria-expanded="false">
+				<span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+			</button>
+		</div>
+	</header>
+
+	<!-- MAIN CONTENT -->
+	<main id="top" class="page">
+		<!-- HERO SECTION -->
+		<section class="hero-container">
+			<div class="hero-content">
+				<div class="eyebrow">
+					<span class="pulse-dot"></span>
+					<span>AI FOR SMARTER CAMPUS INFORMATION</span>
+				</div>
+				<h1>
+					Everything is announced. <br />
+					<em>Almost nothing is understood.</em>
+				</h1>
+				<p class="hero-copy">
+					A deadline should never be missed because it arrived in the wrong group. Clario turns scattered notices, forwarded screenshots, and noisy chats into a verified personal action plan — while clearly flagging the details nobody shared.
+				</p>
+
+				<!-- TAGLINES BANNER -->
+				<div class="taglines-banner">
+					<div class="tagline-pill">
+						<div class="tagline-icon">⚡</div>
+						<div>
+							<div class="tagline-text">"The campus information layer that knows the difference between urgent and loud."</div>
+							<div class="tagline-sub">Verified facts. Clear next moves.</div>
+						</div>
+					</div>
+					<div class="tagline-pill">
+						<div class="tagline-icon">🎯</div>
+						<div>
+							<div class="tagline-text">"One blurry notice can become the opportunity someone almost missed."</div>
+							<div class="tagline-sub">Built for the student who cannot afford to miss it.</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="hero-actions">
+					<a class="primary-link" href="dashboard.html">
+						<span>Launch Campus Dashboard</span>
+						<span aria-hidden="true">↗</span>
+					</a>
+					<a class="secondary-link" href="assistant.html">
+						<span>AI Multimodal Organizer ✦</span>
+					</a>
+				</div>
+			</div>
+
+			<!-- HERO INTERACTIVE CYBER MOCKUP -->
+			<div class="hero-interactive-card">
+				<div class="mockup-header">
+					<div class="traffic-lights">
+						<span class="traffic-light light-red"></span>
+						<span class="traffic-light light-yellow"></span>
+						<span class="traffic-light light-green"></span>
+					</div>
+					<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted);">campus-noise-resolver.ts</span>
+					<span class="eyebrow" style="margin-bottom: 0; padding: 2px 10px; font-size: 0.68rem;">LIVE DEMO</span>
+				</div>
+
+				<div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-md); padding: 18px; margin-bottom: 14px;">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+						<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #ef4444; font-weight: 700;">RAW STREAM: 50+ MESSAGES INGESTED</span>
+						<span style="font-size: 0.72rem; color: #ef4444; font-family: 'JetBrains Mono', monospace;">⚠️ 74% Duplicates</span>
+					</div>
+					<div style="font-size: 0.85rem; color: var(--muted); font-style: italic;">
+						"Robotics club orientation at 11am" (Forwarded 4x) • "ECE Lab moved" • "Scholarship closes tomorrow" • "Hackathon signups open"
+					</div>
+				</div>
+
+				<div style="text-align: center; margin: 8px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent);">
+					↓ CLARIO NEURAL DE-DUPLICATION &amp; COLLISION ENGINE ↓
+				</div>
+
+				<div style="background: var(--surface-solid); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px; margin-bottom: 14px;">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+						<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--accent); font-weight: 700;">FIVE PRIORITIES IDENTIFIED</span>
+						<span style="font-size: 0.72rem; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 2px 8px; border-radius: 99px; font-weight: 600;">Zero Hallucinations</span>
+					</div>
+					<h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 4px;">⚠️ Clash Detected: ECE Lab vs Robotics Orientation</h3>
+					<p style="color: var(--muted); font-size: 0.82rem;">Both scheduled at 11:00 AM. Clario highlighted the conflict and suggested Lab shift to 2:00 PM.</p>
+				</div>
+
+				<div style="background: rgba(124, 58, 237, 0.05); border: 1px dashed rgba(124, 58, 237, 0.3); border-radius: var(--radius-md); padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+					<div>
+						<div style="font-weight: 700; font-size: 0.92rem;">Try with your syllabus or notice flyer</div>
+						<div style="color: var(--muted); font-size: 0.75rem;">Instant OCR &amp; schedule extraction</div>
+					</div>
+					<a href="assistant.html" class="primary-link" style="padding: 8px 16px; font-size: 0.8rem;">Upload Flyer ✦</a>
+				</div>
+			</div>
+
+			<div class="signal-journey" aria-label="Visual showing Clario turning 58 daily messages into five prioritized actions">
+				<div class="journey-heading">
+					<div>
+						<p class="eyebrow">THE CLARITY GAP</p>
+						<h2>From 58 interruptions to <em>5 decisions.</em></h2>
+					</div>
+					<p>Clario does not simply summarize. It protects the exact moment a student needs to act.</p>
+				</div>
+				<div class="journey-steps">
+					<article class="journey-step noise"><span class="journey-number">58</span><div><strong>Messages arrive</strong><small>Groups, PDFs, posters &amp; forwards</small></div></article>
+					<span class="journey-arrow" aria-hidden="true">→</span>
+					<article class="journey-step filter"><span class="journey-number">14</span><div><strong>Signals verified</strong><small>Duplicates and gaps surfaced</small></div></article>
+					<span class="journey-arrow" aria-hidden="true">→</span>
+					<article class="journey-step action"><span class="journey-number">5</span><div><strong>Actions remain</strong><small>Clear next moves, on time</small></div></article>
+				</div>
+			</div>
+
+			<div class="research-snapshot" aria-label="Research data supporting Clario's need">
+				<div class="research-snapshot-intro">
+					<p class="eyebrow">Why Clario is needed</p>
+					<h2>The problem has evidence. <em>Now it needs a better interface.</em></h2>
+					<p>These research snapshots make the case for turning fragmented communication into a reliable student action plan.</p>
+				</div>
+				<div class="research-metrics">
+					<article class="research-metric">
+						<strong>486</strong>
+						<span>university students studied</span>
+						<p>Information and communication overload linked to social-media exhaustion and academic anxiety.</p>
+						<a href="https://doi.org/10.1007/s12144-023-04984-5" target="_blank" rel="noreferrer">2024 research ↗</a>
+					</article>
+					<article class="research-metric">
+						<strong>384</strong>
+						<span>university students surveyed</span>
+						<p>Social and information overload contributed to technostress and exhaustion in mobile learning.</p>
+						<a href="https://doi.org/10.1007/s10796-021-10202-z" target="_blank" rel="noreferrer">Peer-reviewed study ↗</a>
+					</article>
+					<article class="research-metric">
+						<strong>70</strong>
+						<span>higher-education institutions analysed</span>
+						<p>University communication already spans multiple social channels. Students still need one view of what applies to them.</p>
+						<a href="https://doi.org/10.1057/s41599-023-02187-8" target="_blank" rel="noreferrer">Institutional study ↗</a>
+					</article>
+				</div>
+				<div class="research-conclusion"><span>THE PRODUCT GAP</span> Campus messages travel everywhere. Accountability for the student’s next action travels nowhere. <strong>Clario closes that gap.</strong></div>
+			</div>
+		</section>
+
+		<!-- VISUAL DATA & REAL-WORLD CRISIS SECTION -->
+		<section class="crisis-section" id="data-crisis">
+			<div class="page-heading">
+				<p class="eyebrow">The Real-World Data</p>
+				<h1>Why Freshers Drown in <em>Campus Noise.</em></h1>
+				<p>Campus communication has become fragmented across email, messaging groups, learning platforms, posters, and peer forwards. Research links this kind of information and communication overload with fatigue, anxiety, and weaker academic outcomes.</p>
+			</div>
+
+			<div class="data-grid">
+				<!-- Graph Card 1: Channel Inundation -->
+				<div class="data-card">
+					<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+						<div>
+							<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent);">CLARIO PROTOTYPE SCENARIO</span>
+							<h3 style="font-size: 1.4rem; font-weight: 700; margin-top: 4px;">58 Inbound Messages</h3>
+						</div>
+						<span style="font-size: 1.8rem;">📱</span>
+					</div>
+					<p style="font-size: 0.88rem; color: var(--muted); margin-top: 8px;">A realistic prototype flow shows why students need one calm place to interpret information:</p>
+
+					<div class="graph-bar-container">
+						<div class="graph-bar-row">
+							<div class="graph-bar-label">
+								<span>Class WhatsApp Groups</span>
+								<span style="color: var(--accent-cyan);">38% (22 msgs)</span>
+							</div>
+							<div class="graph-bar-track">
+								<div class="graph-bar-fill" style="width: 38%; background: var(--accent-cyan);"></div>
+							</div>
+						</div>
+
+						<div class="graph-bar-row">
+							<div class="graph-bar-label">
+								<span>Society &amp; Club Broadcasts</span>
+								<span style="color: var(--accent);">26% (15 msgs)</span>
+							</div>
+							<div class="graph-bar-track">
+								<div class="graph-bar-fill" style="width: 26%; background: var(--accent);"></div>
+							</div>
+						</div>
+
+						<div class="graph-bar-row">
+							<div class="graph-bar-label">
+								<span>Department &amp; Admin Circulars</span>
+								<span style="color: var(--coral);">22% (13 msgs)</span>
+							</div>
+							<div class="graph-bar-track">
+								<div class="graph-bar-fill" style="width: 22%; background: var(--coral);"></div>
+							</div>
+						</div>
+
+						<div class="graph-bar-row">
+							<div class="graph-bar-label">
+								<span>Hostel &amp; Mess Groups</span>
+								<span style="color: var(--accent-emerald);">14% (8 msgs)</span>
+							</div>
+							<div class="graph-bar-track">
+								<div class="graph-bar-fill" style="width: 14%; background: var(--accent-emerald);"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Graph Card 2: The Consequence of Noise -->
+				<div class="data-card">
+					<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+						<div>
+							<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--coral);">WHAT RESEARCH SUPPORTS</span>
+							<h3 style="font-size: 1.4rem; font-weight: 700; margin-top: 4px;">Overload Has a Cost</h3>
+						</div>
+						<span style="font-size: 1.8rem;">📉</span>
+					</div>
+					<p style="font-size: 0.88rem; color: var(--muted); margin-top: 8px;">The evidence points to a student experience shaped by effort, uncertainty, and missed context:</p>
+
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px;">
+						<div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.2); padding: 16px; border-radius: var(--radius-md);">
+								<div style="font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--coral);">Focus</div>
+								<div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Information overload can add fatigue and anxiety to the academic experience.</div>
+						</div>
+
+						<div style="background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.2); padding: 16px; border-radius: var(--radius-md);">
+								<div style="font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent);">Context</div>
+								<div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Mixed relevance forces students to hunt through threads for what applies to them.</div>
+						</div>
+
+						<div style="background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.2); padding: 16px; border-radius: var(--radius-md);">
+								<div style="font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent-cyan);">Trust</div>
+								<div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">AI needs to show its limits, preserve student agency, and avoid invented facts.</div>
+						</div>
+
+						<div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 16px; border-radius: var(--radius-md);">
+								<div style="font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent-emerald);">Agency</div>
+								<div style="font-size: 0.78rem; color: var(--muted); margin-top: 4px;">Students keep control while Clario makes collisions and consequences visible.</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="crisis-section evidence-section" id="evidence">
+			<div class="page-heading">
+				<p class="eyebrow">Evidence-led by design</p>
+				<h1>Built for a real communication problem. <em>Designed for trust.</em></h1>
+				<p>Clario’s product decisions follow a simple principle: make the useful information easier to find without asking AI to pretend it knows more than the source says.</p>
+			</div>
+			<div class="content-grid">
+				<article class="content-card">
+					<h2>Why this matters</h2>
+					<p>Studies of university students connect information and communication overload with social-media exhaustion, anxiety, and weaker educational outcomes. That makes the “last mile” of campus communication worth redesigning.</p>
+					<a class="evidence-link" href="https://doi.org/10.1007/s12144-023-04984-5" target="_blank" rel="noreferrer">Read the 2024 study ↗</a>
+				</article>
+				<article class="content-card">
+					<h2>Why Clario is careful</h2>
+					<p>NIST describes trustworthy AI as valid, reliable, transparent, explainable, privacy-aware, and accountable. Clario responds by separating confirmed details from missing details and keeping the student in charge.</p>
+					<a class="evidence-link" href="https://airc.nist.gov/airmf-resources/airmf/3-sec-characteristics/" target="_blank" rel="noreferrer">Explore NIST AI trust principles ↗</a>
+				</article>
+				<article class="content-card">
+					<h2>Why human agency stays central</h2>
+					<p>UNESCO calls for a human-centred approach to generative AI in education. Clario supports a student’s decision; it does not make that decision for them.</p>
+					<a class="evidence-link" href="https://www.unesco.org/en/articles/guidance-generative-ai-education-and-research" target="_blank" rel="noreferrer">Read UNESCO guidance ↗</a>
+				</article>
+			</div>
+		</section>
+
+		<!-- HOW CLARIO WORKS SECTION -->
+		<section class="crisis-section" id="how-it-works">
+			<div class="page-heading">
+				<p class="eyebrow">The Architecture</p>
+				<h1>How Clario Works: <em>From Noise to Signal.</em></h1>
+				<p>A deterministic, three-stage intelligence pipeline engineered to parse chaotic campus announcements without ever hallucinating facts or making decisions for the student.</p>
+			</div>
+
+			<div class="content-grid">
+				<article class="content-card">
+					<div style="color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; margin-bottom: 8px;">STAGE 01 // INGESTION</div>
+					<h2>Multimodal Stream Parser</h2>
+					<p>Accepts forwarded WhatsApp chats, messy email circulars, handwritten notice photos, and syllabus PDFs.</p>
+					<ul>
+						<li>OCR Vision processing for flyer posters</li>
+						<li>Structured entity extraction</li>
+						<li>Multi-format support (.pdf, .png, .txt)</li>
+					</ul>
+				</article>
+
+				<article class="content-card">
+					<div style="color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; margin-bottom: 8px;">STAGE 02 // TRIAGE</div>
+					<h2>Collision &amp; De-Duplication</h2>
+					<p>Aggregates 10 forwards into 1 event. Cross-references your timetable in real time to detect conflicting commitments.</p>
+					<ul>
+						<li>Automated clash detection</li>
+						<li>Source fingerprinting (No duplicates)</li>
+						<li>Incomplete notice flagging</li>
+					</ul>
+				</article>
+
+				<article class="content-card">
+					<div style="color: var(--accent-fuchsia); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; margin-bottom: 8px;">STAGE 03 // ACTION</div>
+					<h2>Five Priorities Delivery</h2>
+					<p>Presents what matters, why it matters, and the exact next step without taking autonomy away from the student.</p>
+					<ul>
+						<li>One-click Campus Dashboard sync</li>
+						<li>Urgency &amp; consequence tags</li>
+						<li>Zero hallucinated details</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<!-- WHY CLARIO WINS (UNIQUE HACKATHON EDGE) -->
+		<section class="crisis-section" id="hackathon-edge">
+			<div class="page-heading">
+				<p class="eyebrow">Competitive Advantage</p>
+				<h1>What Other Teams <em>Miss.</em></h1>
+				<p>Most hackathon solutions are simple chatbot wrappers that hallucinate dates and force rigid recommendations. Here is how Clario fundamentally solves the problem statement.</p>
+			</div>
+
+			<div class="data-card" style="overflow-x: auto;">
+				<table class="comparison-table">
+					<thead>
+						<tr>
+							<th style="width: 25%;">Challenge Dimension</th>
+							<th style="width: 35%; color: #ef4444;">Typical Hackathon Team</th>
+							<th style="width: 40%; color: var(--accent-cyan);">✦ Clario Architecture</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><strong>Handling Incomplete Notices</strong></td>
+							<td>Generic LLMs guess or hallucinate missing venues, timings, or prerequisites.</td>
+							<td><strong style="color: var(--accent-emerald);">Strict Grounding:</strong> Never invents details. Flags incomplete circulars with explicit "Missing Venue — Check with Organizer" tags.</td>
+						</tr>
+						<tr>
+							<td><strong>Student Agency</strong></td>
+							<td>Makes rigid, prescriptive decisions ("You should attend X instead of Y").</td>
+							<td><strong style="color: var(--accent-emerald);">Preserves Student Agency:</strong> Highlights urgency, clashes, and consequences so the student remains in full control.</td>
+						</tr>
+						<tr>
+							<td><strong>Schedule Clashes</strong></td>
+							<td>Treats each announcement in isolation, completely missing timetable overlap.</td>
+							<td><strong style="color: var(--accent-emerald);">Collision Detection Engine:</strong> Automatically detects overlapping labs, orientations, and deadlines in real-time.</td>
+						</tr>
+						<tr>
+							<td><strong>Duplicate WhatsApp Forwards</strong></td>
+							<td>Creates separate clutter cards for every forwarded message across 5 groups.</td>
+							<td><strong style="color: var(--accent-emerald);">Intelligent De-Duplication:</strong> Fuses duplicate forwards into a single verified master update with unified source tags.</td>
+						</tr>
+						<tr>
+							<td><strong>Multimodal Real-World Inputs</strong></td>
+							<td>Text-only chatbots that fail when CRs send poster images or PDF timetables.</td>
+							<td><strong style="color: var(--accent-emerald);">Native Multimodal Vision:</strong> Drop real screenshots, posters, and syllabi; extracts deadlines in &lt;12ms.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+	</main>
+
+	<!-- SOLUTIONS PAGE -->
+	<section class="site-page page" id="solutions" hidden>
+		<div class="page-heading">
+			<p class="eyebrow">Solutions</p>
+			<h1>Tools for the <em>Next Move.</em></h1>
+			<p>Simple ways to move from scattered thinking to shared campus direction.</p>
+		</div>
+		<div class="content-grid">
+			<article class="content-card">
+				<h2>Focus</h2>
+				<p>Cut through academic and startup overload with razor-sharp daily triage.</p>
+				<ul>
+					<li>Prioritize what matters</li>
+					<li>Reduce distraction</li>
+					<li>Keep goals visible</li>
+				</ul>
+			</article>
+			<article class="content-card">
+				<h2>Collaborate</h2>
+				<p>Work effortlessly with your club, project partners, and hackathon team.</p>
+				<ul>
+					<li>Share context quickly</li>
+					<li>Build on good ideas</li>
+					<li>Make ownership clear</li>
+				</ul>
+			</article>
+			<article class="content-card">
+				<h2>Grow</h2>
+				<p>Reflect on what works and compound your efficiency semester over semester.</p>
+				<ul>
+					<li>Review what worked</li>
+					<li>Learn as a team</li>
+					<li>Keep improving the system</li>
+				</ul>
+			</article>
+		</div>
+	</section>
+
+	<!-- TEAM PAGE -->
+	<section class="site-page page" id="team" hidden>
+		<div class="page-heading">
+			<p class="eyebrow">✦ Team SheCrescera</p>
+			<h1>Built by people who <em>care.</em></h1>
+			<p>We are reimagining how freshers understand and act upon chaotic campus information. Transforming fifty noisy announcements into five clear student priorities.</p>
+		</div>
+
+		<div class="team-layout">
+			<div class="content-card team-logo-panel">
+				<img class="team-page-logo logo-light" src="SheCrescera_light%20theme.jpeg" alt="SheCrescera team logo" />
+				<img class="team-page-logo logo-dark" src="SheCrescera_dark%20theme.jpeg" alt="SheCrescera team logo" />
+				<h3 style="margin-top: 20px; font-family: 'Space Grotesk', sans-serif;">SheCrescera</h3>
+				<p style="color: var(--muted); font-size: 0.85rem; margin-top: 4px;">AI for Smarter Campus Information</p>
+			</div>
+
+			<div class="team-grid">
+				<article class="team-card">
+					<div class="team-avatar" style="background: linear-gradient(135deg, #7c3aed, #06b6d4);">R</div>
+					<div>
+						<h2>Rishita Jain</h2>
+						<p>AI Architecture &amp; Systems Engineering</p>
+						<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-cyan);">Co-Founder &amp; Tech Lead</span>
+					</div>
+				</article>
+
+				<article class="team-card">
+					<div class="team-avatar" style="background: linear-gradient(135deg, #ec4899, #7c3aed);">A</div>
+					<div>
+						<h2>Amulya Kalsaan</h2>
+						<p>Research &amp; Presentation Design</p>
+						<span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-fuchsia);">Research &amp; Presentation Lead</span>
+					</div>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<!-- UNIQUE ACCOUNT & STUDENT PASS PORTAL -->
+	<section class="site-page page" id="account" hidden>
+		<div class="page-heading" style="text-align: center; max-width: 800px; margin: 0 auto 30px;">
+			<p class="eyebrow">✦ Campus Verification &amp; Portal</p>
+			<h1>Enter the <em>Campus Portal.</em></h1>
+			<p>Connect your student profile to activate automated clash detection, personalized 5 daily priorities, and verified announcement streams.</p>
+		</div>
+
+		<div class="auth-portal-grid" style="max-width: 1080px; margin: 0 auto;">
+			<!-- LIVE INTERACTIVE STUDENT DIGITAL SMART PASS -->
+			<div class="student-pass-card">
+				<div class="pass-header">
+					<div class="pass-chip"></div>
+					<div class="pass-status-pill">● ENROLLED &amp; ACTIVE</div>
+				</div>
+
+				<div style="font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 6px;">CLARIO STUDENT IDENTITY</div>
+				<div class="pass-name" id="preview-pass-name">Aria Mehta</div>
+				<div class="pass-college" id="preview-pass-college">Campus University</div>
+
+				<div class="pass-details">
+					<div class="pass-detail-item">
+						<span>ACADEMIC YEAR</span>
+						<strong id="preview-pass-year">1st year</strong>
+					</div>
+					<div class="pass-detail-item">
+						<span>SEMESTER</span>
+						<strong id="preview-pass-sem">Semester 1</strong>
+					</div>
+					<div class="pass-detail-item">
+						<span>STUDENT ID</span>
+						<strong>#CLR-2026-9842</strong>
+					</div>
+					<div class="pass-detail-item">
+						<span>TRIAGE MODE</span>
+						<strong style="color: var(--accent-emerald);">Collision Shield On</strong>
+					</div>
+				</div>
+
+				<div class="pass-footer">
+					<span>SheCrescera Neural Network</span>
+					<span style="letter-spacing: 2px;">||| | |||| | |||</span>
+				</div>
+			</div>
+
+			<!-- TABBED AUTH FORMS -->
+			<div class="form-panel" style="padding: 32px;">
+				<div class="auth-tabs-header">
+					<button type="button" class="auth-tab-trigger is-active" data-auth-mode="signin">🔑 Sign In</button>
+					<button type="button" class="auth-tab-trigger" data-auth-mode="signup">🎓 Create Student Pass</button>
+				</div>
+
+				<!-- SIGN IN FORM -->
+				<form class="auth-form" data-auth-form="signin">
+					<label class="form-field">
+						Campus Email Address
+						<input type="email" id="signin-email-input" value="aria@campus.edu" placeholder="you@campus.edu" required />
+					</label>
+					<label class="form-field">
+						Password
+						<input type="password" id="signin-pass-input" value="••••••••" placeholder="••••••••" required />
+					</label>
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 8px;">
+						<label style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--muted); cursor: pointer; user-select: none;">
+							<input type="checkbox" id="keep-signed-in" checked style="accent-color: var(--accent); width: 16px; height: 16px;" />
+							<span>Keep me signed in</span>
+						</label>
+						<button class="forgot-password" type="button">Forgot password?</button>
+					</div>
+					<button class="form-submit" type="submit">Sign In as Aria Mehta ↗</button>
+					<p class="account-switch" style="margin-top: 18px;">
+						Need a student pass? <button type="button" data-auth-switch-to="signup" style="background: transparent; border: 0; color: var(--accent); font-weight: 700; cursor: pointer;">Register in 30 seconds</button>
+					</p>
+				</form>
+
+				<!-- SIGN UP FORM -->
+				<form class="auth-form" data-auth-form="signup" hidden>
+					<label class="form-field">
+						Full Name
+						<input id="signup-name-input" type="text" placeholder="e.g. Aria Mehta" required />
+					</label>
+					<label class="form-field">
+						College / University Name
+						<input id="signup-college-input" type="text" placeholder="e.g. Campus University" required />
+					</label>
+					<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+						<label class="form-field">
+							Year
+							<select id="signup-year-select" required>
+								<option value="" selected disabled>Select year</option>
+								<option value="1st year">1st year</option>
+								<option value="2nd year">2nd year</option>
+								<option value="3rd year">3rd year</option>
+								<option value="4th year">4th year</option>
+							</select>
+						</label>
+						<label class="form-field">
+							Semester
+							<select id="signup-sem-select" required>
+								<option value="" selected disabled>Select Semester</option>
+								<option value="Semester 1">Semester 1</option>
+								<option value="Semester 2">Semester 2</option>
+								<option value="Semester 3">Semester 3</option>
+								<option value="Semester 4">Semester 4</option>
+								<option value="Semester 5">Semester 5</option>
+								<option value="Semester 6">Semester 6</option>
+								<option value="Semester 7">Semester 7</option>
+								<option value="Semester 8">Semester 8</option>
+							</select>
+						</label>
+					</div>
+					<label class="form-field">
+						Campus Email Address
+						<input type="email" placeholder="you@campus.edu" required />
+					</label>
+					<label class="form-field">
+						Password
+						<input type="password" placeholder="Choose a secure password" required />
+					</label>
+					<div style="margin: 16px 0 10px;">
+						<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+							<span style="font-size: 0.82rem; font-weight: 700; color: var(--ink);">❤️ Academic &amp; Tech Interests (Chips):</span>
+							<button type="button" id="signup-select-all-btn" style="background: rgba(37, 99, 235, 0.12); border: 1px solid rgba(37, 99, 235, 0.35); color: #3b82f6; border-radius: 99px; padding: 2px 10px; font-size: 0.72rem; font-family: 'JetBrains Mono', monospace; font-weight: 700; cursor: pointer;">✓ Select All</button>
+						</div>
+						<div class="interest-chips-container" id="signup-interest-chips">
+							<button type="button" class="interest-chip is-selected" data-interest="ai">🤖 AI / ML</button>
+							<button type="button" class="interest-chip is-selected" data-interest="hackathons">🏆 Hackathons</button>
+							<button type="button" class="interest-chip" data-interest="robotics">🦾 Robotics</button>
+							<button type="button" class="interest-chip is-selected" data-interest="coding">💻 Coding</button>
+							<button type="button" class="interest-chip" data-interest="design">🎨 Design</button>
+							<button type="button" class="interest-chip" data-interest="sports">⚽ Sports</button>
+							<button type="button" class="interest-chip" data-interest="music">🎵 Music</button>
+							<button type="button" class="interest-chip" data-interest="startup">💼 Entrepreneurship</button>
+						</div>
+					</div>
+					<button class="form-submit" type="submit">Activate Student Pass &amp; Enter 🚀</button>
+					<p class="account-switch" style="margin-top: 18px;">
+						Already have an account? <button type="button" data-auth-switch-to="signin" style="background: transparent; border: 0; color: var(--accent); font-weight: 700; cursor: pointer;">Sign in here</button>
+					</p>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<!-- CUSTOMIZE ACCENT PAGE -->
+	<section class="site-page page" id="customize" hidden>
+		<div class="page-heading">
+			<p class="eyebrow">Personalization Matrix</p>
+			<h1>Choose your <em>accent.</em></h1>
+			<p>Pick an electric shade for buttons, borders, and ambient micro-interactions. Saves automatically to your browser.</p>
+		</div>
+
+		<div class="content-card" style="max-width: 700px;">
+			<div class="theme-controls">
+				<label class="form-field" style="margin-bottom: 0;">
+					Custom Palette
+					<input class="color-input" id="accent-picker" type="color" value="#7c3aed" />
+				</label>
+				<button class="color-swatch" type="button" data-color="#7c3aed" style="background:#7c3aed" aria-label="Cyber Violet"></button>
+				<button class="color-swatch" type="button" data-color="#06b6d4" style="background:#06b6d4" aria-label="Electric Cyan"></button>
+				<button class="color-swatch" type="button" data-color="#10b981" style="background:#10b981" aria-label="Neon Emerald"></button>
+				<button class="color-swatch" type="button" data-color="#f43f5e" style="background:#f43f5e" aria-label="Hyper Coral"></button>
+				<button class="color-swatch" type="button" data-color="#f59e0b" style="background:#f59e0b" aria-label="Amber Sun"></button>
+				<button class="reset-button" type="button" id="reset-accent">Reset Default</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- REORGANIZED LOGICAL SIDEBAR DRAWER -->
+	<div class="backdrop" data-close-menu></div>
+	<aside class="sidebar" id="sidebar" aria-label="Main navigation" aria-hidden="true">
+		<div class="sidebar-top">
+			<a class="brand" href="#top" data-close-menu>
+				<img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" />
+				<img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" />
+			</a>
+			<button class="close-button" type="button" aria-label="Close navigation menu" data-close-menu>×</button>
+		</div>
+		<nav>
+			<a href="#top" data-close-menu><span class="nav-num">01 //</span> What is Clario?</a>
+			<a href="#data-crisis" data-close-menu><span class="nav-num">02 //</span> Campus Data &amp; Insights</a>
+			<a href="#how-it-works" data-close-menu><span class="nav-num">03 //</span> How Clario Works</a>
+			<a href="about.html" data-close-menu><span class="nav-num">04 //</span> About Clario</a>
+			<a href="#account" data-close-menu><span class="nav-num">05 //</span> Student Sign In / Portal</a>
+			<a href="assistant.html" data-close-menu><span class="nav-num">06 //</span> Multimodal AI Organizer ✦</a>
+			<a href="dashboard.html" data-close-menu><span class="nav-num">07 //</span> Live Campus Dashboard ↗</a>
+			<a href="why-clario.html" data-close-menu><span class="nav-num">08 //</span> Why Clario Wins (Unique Edge)</a>
+			<a href="team.html" data-close-menu><span class="nav-num">09 //</span> Team SheCrescera</a>
+			<a href="conclusion.html" data-close-menu><span class="nav-num">10 //</span> Our Shared Vision</a>
+			<a href="customize.html" data-close-menu><span class="nav-num">11 //</span> Customize Theme &amp; Palette 🎨</a>
+		</nav>
+		<p class="sidebar-footer">© 2026 Clario • Built by Team SheCrescera.</p>
+	</aside>
+
+	<!-- SCRIPTS -->
+	<script src="script.js"></script>
+	<script>
+		// Single Page Routing supporting anchor scrolling
+		const home = document.querySelector('main#top');
+		const pages = document.querySelectorAll('.site-page[id]');
+
+		function showRoute() {
+			const hash = window.location.hash.slice(1) || 'top';
+			const homeSections = ['top', 'data-crisis', 'how-it-works', 'hackathon-edge'];
+			const isHome = homeSections.includes(hash);
+
+			if (home) home.hidden = !isHome;
+			
+			pages.forEach((page) => {
+				if (homeSections.includes(page.id)) return;
+				page.hidden = page.id !== hash;
+			});
+
+			if (isHome && hash !== 'top') {
+				const target = document.getElementById(hash);
+				if (target) {
+					setTimeout(() => {
+						target.scrollIntoView({ behavior: 'smooth' });
+					}, 50);
+				}
+			} else if (isHome && hash === 'top') {
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			} else {
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+			}
+		}
+
+		window.addEventListener('hashchange', showRoute);
+		showRoute();
+	</script>
+</body>
+</html>

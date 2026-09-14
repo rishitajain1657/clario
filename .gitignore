@@ -1,0 +1,6 @@
+﻿node_modules/
+.env
+data/
+_backup_original/
+.DS_Store
+Thumbs.db

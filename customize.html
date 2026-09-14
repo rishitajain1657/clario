@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Customize | Clario</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" /></head>
+<body class="dark-theme">
+<div id="spotlight"></div>
+<header class="site-header"><a class="brand" href="index.html" aria-label="Clario home"><img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" /><img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" /></a><div class="header-actions"><button class="theme-toggle is-dark" type="button" aria-label="Switch to light theme" aria-pressed="true"><span class="theme-icon">☼</span><span class="theme-icon">☾</span></button><button class="menu-button" type="button" aria-label="Open navigation menu"><span class="hamburger"><span></span><span></span><span></span></span></button></div></header>
+<main class="page">
+	<div class="page-heading" style="text-align: center; max-width: 800px; margin: 0 auto 36px;">
+		<p class="eyebrow">🎨 Personalization Matrix</p>
+		<h1>Choose your <em>theme accent.</em></h1>
+		<p>Pick an electric shade for buttons, borders, and ambient micro-interactions across Clario. Your preference automatically persists across your entire campus dashboard.</p>
+	</div>
+
+	<div class="content-card" style="max-width: 720px; margin: 0 auto; padding: 36px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow);">
+		<h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem; margin-bottom: 8px;">Preset Neon &amp; Cyber Palettes:</h3>
+		<p style="font-size: 0.86rem; color: var(--muted); margin-bottom: 22px;">Click any color swatch to instantly re-theme all Clario pages:</p>
+
+		<div class="theme-controls" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 28px;">
+			<button class="color-swatch" type="button" data-color="#7c3aed" style="background:#7c3aed" aria-label="Cyber Violet" title="Cyber Violet (#7c3aed)"></button>
+			<button class="color-swatch" type="button" data-color="#06b6d4" style="background:#06b6d4" aria-label="Electric Cyan" title="Electric Cyan (#06b6d4)"></button>
+			<button class="color-swatch" type="button" data-color="#10b981" style="background:#10b981" aria-label="Neon Emerald" title="Neon Emerald (#10b981)"></button>
+			<button class="color-swatch" type="button" data-color="#f43f5e" style="background:#f43f5e" aria-label="Hyper Coral" title="Hyper Coral (#f43f5e)"></button>
+			<button class="color-swatch" type="button" data-color="#f59e0b" style="background:#f59e0b" aria-label="Amber Sun" title="Amber Sun (#f59e0b)"></button>
+			<button class="color-swatch" type="button" data-color="#2563eb" style="background:#2563eb" aria-label="Cobalt Blue" title="Cobalt Blue (#2563eb)"></button>
+			<button class="color-swatch" type="button" data-color="#ec4899" style="background:#ec4899" aria-label="Electric Pink" title="Electric Pink (#ec4899)"></button>
+		</div>
+
+		<div style="border-top: 1px solid var(--line); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+			<label style="display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 0.92rem; font-family: 'Space Grotesk', sans-serif;">
+				Custom Hex Color:
+				<input class="color-input" id="accent-picker" type="color" value="#7c3aed" style="cursor: pointer; width: 44px; height: 44px; border: 0; background: transparent; border-radius: 99px;" />
+			</label>
+			<button class="reset-button" type="button" id="reset-accent" style="padding: 10px 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-solid);">Reset Default</button>
+		</div>
+	</div>
+
+	<div style="max-width: 720px; margin: 32px auto 0; text-align: center;">
+		<a href="dashboard.html" class="primary-link" style="padding: 12px 26px; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 8px;">
+			Return to Campus Dashboard ↗
+		</a>
+	</div>
+</main>
+<div class="backdrop" data-close-menu></div><aside class="sidebar"><div class="sidebar-top"><a class="brand" href="index.html" data-close-menu><img class="brand-logo logo-light" src="Clario_light%20theme.jpeg" alt="Clario logo" /><img class="brand-logo logo-dark" src="Clario_dark%20theme.jpeg" alt="Clario logo" /></a><button class="close-button" type="button" data-close-menu aria-label="Close menu">×</button></div><nav></nav><p class="sidebar-footer">© 2026 Clario • Built by Team SheCrescera.</p></aside><script src="script.js"></script>
+</body>
+</html>
